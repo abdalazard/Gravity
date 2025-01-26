@@ -1,27 +1,38 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import player from './assets/sprites/player/textures/Astronaut_matmat_baseColor.png'; // Make sure to import the correct image file
 
 // Component for the ground
 function Ground() {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-      <planeGeometry args={[500, 500]} />
+      <planeGeometry args={[50, 50]} />
       <meshStandardMaterial color="#808080" />
     </mesh> 
   );
 }
 
-// Component for the player's character
 function Player() {
+  const map = useLoader(TextureLoader, player); 
+  const material = new THREE.SpriteMaterial({ map: map, color: 0xffffff });
+
+  const spriteRef = useRef();
+
+  useFrame(() => {
+    // Animações futuras podem ser adicionadas aqui
+    // spriteRef.current.rotation.y += 0.01;
+  });
+
   return (
-    <mesh position={[0, 0.5, 0]} castShadow>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color="#00ff00" />
+    <mesh ref={spriteRef} position={[0, 0.5, 0]} scale={[1, 1, 1]}> {/* Adjust scale as needed */}
+      <planeGeometry args={[1, 1]} /> {/* Use planeGeometry to display the sprite */}
+      <spriteMaterial map={map} /> 
     </mesh>
   );
 }
-
 // Main game scene
 function Scene() {
   return (
@@ -32,7 +43,7 @@ function Scene() {
 
       {/* Ground and Player */}
       <Ground />
-      <Player />
+      <Player /> {/* Player adicionado diretamente na cena */}
     </>
   );
 }
